@@ -11,9 +11,17 @@ func toJSON(v interface{}) template.JS {
 }
 
 const templateString = `
-	<html><head><title>ev</title></head><body><div id="app-root"></div>
-	<script>window.GIT_HISTORY = JSON.parse("{{json .}}");</script>
-	<script src="dist/bundle.js"></script></body></html>`
+<html>
+	<head>
+		<title>ev</title>
+	</head>
+	
+	<body>
+		<div id="app-root"></div>
+		<script>window.GIT_HISTORY = JSON.parse("{{json .}}");</script>
+		<script src="dist/bundle.js"></script>
+	</body>
+</html>`
 
 var indexTemplate = template.Must(
 	template.New("index").
