@@ -32,7 +32,7 @@ func main() {
 
 	parsedLog, err := ev.Log(funcName, fileName)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("unable to parse git log: %s", err.Error())
 	}
 	mux := http.NewServeMux()
 	mux.Handle("/dist/", http.StripPrefix("/dist/", http.FileServer(ui.FS)))
@@ -48,6 +48,9 @@ func main() {
 			log.Fatal(err)
 		}
 	}()
-	browser.OpenURL("http://localhost:8888")
+	err = browser.OpenURL("http://localhost:8888")
+	if err != nil {
+		log.Fatalf("unable to open the browser: %s", err.Error())
+	}
 	select {}
 }
