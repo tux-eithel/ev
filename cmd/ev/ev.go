@@ -32,7 +32,7 @@ func main() {
 
 	parsedLog, err := ev.Log(funcName, fileName)
 	if err != nil {
-		log.Fatalf("unable to parse git log: %s", err.Error())
+		log.Fatal(err)
 	}
 	mux := http.NewServeMux()
 	mux.Handle("/dist/", http.StripPrefix("/dist/", http.FileServer(ui.FS)))
