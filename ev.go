@@ -99,6 +99,12 @@ func Log(re, fn string) ([]*Commit, error) {
 	if err := scn.Err(); err != nil {
 		return nil, fmt.Errorf("parse: %s", err)
 	}
+	// append the last item!
+	if c != nil {
+		c.Diff = diff.String()
+		c.Msg = msg.String()
+		list = append(list, c)
+	}
 	return list, nil
 }
 
