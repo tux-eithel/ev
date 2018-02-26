@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"os/exec"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -125,24 +124,24 @@ func Log(re, fn string) ([]*Commit, error) {
 	return list, nil
 }
 
-// epoch converts s to time.Time. s is expected to hold the number of
-// seconds since the epoch time.
-func epoch(s string) time.Time {
-	i, err := strconv.ParseInt(s, 10, 64)
-	if err != nil {
-		return time.Now()
-	}
-	return time.Unix(i, 0)
-}
-
 // readHeader reads a git log header into c.
 func readHeader(line string, c *Commit) error {
-	p := strings.Split(line, ",")
+	p := strings.Split(line, separator)
 	if len(p) != 7 {
 		return fmt.Errorf("bad header: %s", line)
 	}
+
+	aDate, err := time.Parse(time.RFC1123Z, p[3])
+	if err != nil {
+		return fmt.Errorf("unable to parse Author date: %s", err)
+	}
+	cDate, err := time.Parse(time.RFC1123Z, p[6])
+	if err != nil {
+		return fmt.Errorf("unable to parse Committer date: %s", err)
+	}
+
 	c.SHA, c.AuthorName, c.AuthorEmail, c.AuthorDate,
 		c.CommitterName, c.CommitterEmail, c.CommitterDate =
-		p[0], p[1], p[2], epoch(p[3]), p[4], p[5], epoch(p[6])
+		p[0], p[1], p[2], aDate, p[4], p[5], cDate
 	return nil
 }
