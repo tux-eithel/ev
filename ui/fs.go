@@ -2,7 +2,7 @@
 
 // Package ui generates binary data from the files inside the dist/ folder
 // to be included into the final binary, or to be served during development.
-package ui // import "gbbr.io/ev/ui"
+package ui
 
 import assetfs "github.com/elazarl/go-bindata-assetfs"
 

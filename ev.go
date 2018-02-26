@@ -1,4 +1,5 @@
-package ev // import "gbbr.io/ev"
+package ev
+
 import (
 	"bufio"
 	"bytes"
