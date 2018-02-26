@@ -26,6 +26,8 @@ const (
 	endLog = "EV_BODY_END"
 
 	separator = "|"
+
+	localRFC1123Z = "Mon, _2 Jan 2006 15:04:05 -0700"
 )
 
 // Commit holds an entry inside the git log output.
@@ -131,11 +133,11 @@ func readHeader(line string, c *Commit) error {
 		return fmt.Errorf("bad header: %s", line)
 	}
 
-	aDate, err := time.Parse(time.RFC1123Z, p[3])
+	aDate, err := time.Parse(localRFC1123Z, p[3])
 	if err != nil {
 		return fmt.Errorf("unable to parse Author date: %s", err)
 	}
-	cDate, err := time.Parse(time.RFC1123Z, p[6])
+	cDate, err := time.Parse(localRFC1123Z, p[6])
 	if err != nil {
 		return fmt.Errorf("unable to parse Committer date: %s", err)
 	}
