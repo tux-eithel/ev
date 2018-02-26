@@ -12,10 +12,13 @@ import (
 	"github.com/tux-eithel/ev/ui"
 )
 
-var funcName, fileName string
-var parsedLog []*ev.Commit
+func usageAndExit() {
+	fmt.Println("usage:\n\tev <funcname>:<file> or <start_line>,<end_line>:<file>")
+	os.Exit(0)
+}
 
-func init() {
+func main() {
+	var err error
 	log.SetFlags(0)
 	log.SetPrefix("ev: ")
 	if len(os.Args) <= 1 {
@@ -25,29 +28,21 @@ func init() {
 	if len(parts) != 2 {
 		usageAndExit()
 	}
-	funcName, fileName = parts[0], parts[1]
-}
+	funcName, fileName := parts[0], parts[1]
 
-func usageAndExit() {
-	fmt.Println(`usage: ev <funcname>:<file>`)
-	os.Exit(0)
-}
-
-func index(w http.ResponseWriter, req *http.Request) {
-	if err := indexTemplate.Execute(w, parsedLog); err != nil {
-		log.Fatal(err)
-	}
-}
-
-func main() {
-	var err error
-	parsedLog, err = ev.Log(funcName, fileName)
+	parsedLog, err := ev.Log(funcName, fileName)
 	if err != nil {
 		log.Fatal(err)
 	}
 	mux := http.NewServeMux()
 	mux.Handle("/dist/", http.StripPrefix("/dist/", http.FileServer(ui.FS)))
-	mux.HandleFunc("/", index)
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		if err := indexTemplate.Execute(w, parsedLog); err != nil {
+			log.Fatal(err)
+		}
+	})
+
 	go func() {
 		if err := http.ListenAndServe(":8888", mux); err != nil {
 			log.Fatal(err)
