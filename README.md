@@ -1,10 +1,14 @@
 ## ev
-explore the evolution of a function in your browser.
+explore the evolution of a function, or file, in your browser.
+
+### fork
+
+This is a forked version of [this](https://github.com/gbbr/ev).
 
 ### installation
 
 ```
-go get gbbr.io/ev/cmd/...
+go get -u github.com/tux-eithel/ev/cmd...
 ```
 
 ### usage
