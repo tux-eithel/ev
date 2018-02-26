@@ -28,10 +28,16 @@ type Commit struct {
 // logReader executes the `git log -L:<re>:<fn>` command with a custom format
 // and returns an io.Reader which can read from the output.
 func logReader(re, fn string) (io.Reader, error) {
+	var logCommand string
+	if !strings.Contains(re, ",") {
+		logCommand = fmt.Sprintf("-L %s:%s", re, fn)
+	} else {
+		logCommand = fmt.Sprintf("-L %s:%s", re, fn)
+	}
 	cmd := exec.Command("git", "log",
-		fmt.Sprintf("-L^:%s:%s", re, fn),
+		logCommand,
 		`--date=unix`,
-		`--pretty=format:HEADER:%H,%an,%ae,%ad,%cn,%ce,%cd%n%b%nEV_BODY_END`)
+		`--pretty=format:HEADER:%H,%an,%ae,%ad,%cn,%ce,%cd%n%s%nEV_BODY_END`)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
