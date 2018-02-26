@@ -3,7 +3,6 @@ package ev
 import (
 	"bufio"
 	"bytes"
-	"errors"
 	"fmt"
 	"io"
 	"os/exec"
@@ -62,7 +61,7 @@ func logReader(re, fn string) (io.Reader, error) {
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
-		return nil, errors.New(stderr.String())
+		return nil, fmt.Errorf("error running command: %s\noutput command: %s", err, stderr.String())
 	}
 	return &stdout, nil
 }
