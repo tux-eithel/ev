@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"gbbr.io/ev"
-	"gbbr.io/ev/ui"
 	"github.com/pkg/browser"
+	"github.com/tux-eithel/ev"
+	"github.com/tux-eithel/ev/ui"
 )
 
 var funcName, fileName string
