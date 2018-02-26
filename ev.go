@@ -110,7 +110,7 @@ func epoch(s string) time.Time {
 func readHeader(line string, c *Commit) error {
 	p := strings.Split(line, ",")
 	if len(p) != 7 {
-		return fmt.Errorf("bad header: %s\n", line)
+		return fmt.Errorf("bad header: %s", line)
 	}
 	c.SHA, c.AuthorName, c.AuthorEmail, c.AuthorDate,
 		c.CommitterName, c.CommitterEmail, c.CommitterDate =
