@@ -20,6 +20,11 @@ Below is an example screenshot viewing the `IndexAny` function from Go's `bytes`
 
 See a [demo](https://youtu.be/GqfDZX7xLUQ) of it, or try it out yourself!
 
+The forked version of the command now support also the format
+```
+usage: ev <start_line>:<end_line>:<file>
+```
+
 ---
 
 Note that `ev` uses `git log -L:<re>:<fn>` syntax, meaning that it also comes with its limitations. More specifically, if the file has multiple functions sharing the same name (ie. both method and function) it will only refer to the first occurrence starting from the top of the file.
