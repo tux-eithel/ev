@@ -12,6 +12,23 @@ import (
 	"time"
 )
 
+const (
+	startLog = "HEADER:"
+
+	commitHash  = "%H"
+	authorName  = "%an"
+	authorEmail = "%ae"
+	authorDate  = "%ad"
+
+	committerName  = "%cn"
+	committerEmail = "%ce"
+	committerDate  = "%cd"
+
+	endLog = "EV_BODY_END"
+
+	separator = "|"
+)
+
 // Commit holds an entry inside the git log output.
 type Commit struct {
 	SHA            string
@@ -66,7 +83,7 @@ func Log(re, fn string) ([]*Commit, error) {
 	readingDiff := false
 	for scn.Scan() {
 		line := scn.Text()
-		if strings.HasPrefix(line, "HEADER:") {
+		if strings.HasPrefix(line, startLog) {
 			readingDiff = false
 			if c != nil {
 				c.Diff = diff.String()
@@ -74,7 +91,7 @@ func Log(re, fn string) ([]*Commit, error) {
 				list = append(list, c)
 			}
 			c = new(Commit)
-			err := readHeader(line[7:], c)
+			err := readHeader(line[len(startLog):], c)
 			if err != nil {
 				return nil, err
 			}
@@ -82,7 +99,7 @@ func Log(re, fn string) ([]*Commit, error) {
 			msg.Truncate(0)
 			continue
 		}
-		if line == "EV_BODY_END" {
+		if line == endLog {
 			readingDiff = true
 			continue
 		}
