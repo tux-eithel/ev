@@ -13,7 +13,7 @@ import (
 )
 
 func usageAndExit() {
-	fmt.Println("usage:\n\tev <funcname>:<file> or <start_line>,<end_line>:<file>")
+	fmt.Printf("usage:\n\tev <funcname>:<file> or <start_line>,<end_line>:<file>\n")
 	os.Exit(0)
 }
 
