@@ -3,6 +3,15 @@
 
 [[projects]]
   branch = "master"
+  name = "gbbr.io/ev"
+  packages = [
+    ".",
+    "ui"
+  ]
+  revision = "04bd4851532a71a29e46d7c29329899463547bc8"
+
+[[projects]]
+  branch = "master"
   name = "github.com/elazarl/go-bindata-assetfs"
   packages = ["."]
   revision = "30f82fa23fd844bd5bb1e5f216db87fd77b5eb43"
@@ -16,6 +25,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4c0d3af6fd91c6beccd2157dcf458de9561d00269f6595c084b14a6fa5fdcb6e"
+  inputs-digest = "2d7e7f9f08667dc4d4fc3378c0e1d2632314eaad5f3f20884ed965746fa0d12d"
   solver-name = "gps-cdcl"
   solver-version = 1
