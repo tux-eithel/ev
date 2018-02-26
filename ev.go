@@ -7,6 +7,7 @@ import (
 	"io"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -46,22 +47,41 @@ type Commit struct {
 
 // logReader executes the `git log -L:<re>:<fn>` command with a custom format
 // and returns an io.Reader which can read from the output.
-func logReader(re, fn string) (io.Reader, error) {
+func logReader(re, file string) (io.Reader, error) {
 
 	logCommand := []string{
 		"log",
 		"--date=rfc",
 		"--pretty=format:" + startLog + ":" + strings.Join([]string{commitHash, authorName, authorEmail, authorDate, committerName, committerEmail, committerDate}, separator) + "%n%s%n" + endLog,
 	}
-	logCommand = append(logCommand, fmt.Sprintf("-L %s:%s", re, fn))
+	logCommand = append(logCommand, fmt.Sprintf("-L %s:%s", re, file))
 
 	cmd := exec.Command("git", logCommand...)
-	cmd.Dir = filepath.Dir(fn)
+	cmd.Dir = filepath.Dir(file)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
+
 	if err := cmd.Run(); err != nil {
-		return nil, fmt.Errorf("error running command: %s\noutput command: %s", err, stderr.String())
+		gitError := stderr.String()
+
+		if strings.Contains(re, ",") {
+
+			rows := recoverError(gitError)
+			if rows != "" {
+				split := strings.Split(re, ",")
+				return logReader(fmt.Sprintf("%s,%s", split[0], rows), file)
+			}
+		}
+
+		baseErrorStrs := `error running command: %s`
+		baseErrorVars := []interface{}{err}
+		if gitError != "" {
+			baseErrorStrs += `; output command: %s`
+			baseErrorVars = append(baseErrorVars, gitError)
+		}
+
+		return nil, fmt.Errorf(baseErrorStrs, baseErrorVars...)
 	}
 	return &stdout, nil
 }
@@ -147,4 +167,14 @@ func readHeader(line string, c *Commit) error {
 		c.CommitterName, c.CommitterEmail, c.CommitterDate =
 		p[0], p[1], p[2], aDate, p[4], p[5], cDate
 	return nil
+}
+
+// recoverError tries to match "fatal: file <filename> has only 395 lines" git error string
+func recoverError(e string) string {
+	r := regexp.MustCompile(`has only (\d+) lines`)
+	a := r.FindStringSubmatch(e)
+	if len(a) == 2 {
+		return a[1]
+	}
+	return ""
 }
