@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os/exec"
-	"path"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -56,7 +56,7 @@ func logReader(re, fn string) (io.Reader, error) {
 	logCommand = append(logCommand, fmt.Sprintf("-L %s:%s", re, fn))
 
 	cmd := exec.Command("git", logCommand...)
-	cmd.Dir = path.Dir(fn)
+	cmd.Dir = filepath.Dir(fn)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
